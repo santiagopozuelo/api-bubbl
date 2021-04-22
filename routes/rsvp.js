@@ -41,7 +41,7 @@ var passport_setup = function(){
                     clientID: '68a7e876-119d-487d-8ae4-7e7fc6fde029',
                      clientSecret:  "OMZY9SkQxCwXMkzz2bLMaGs1q6753-tOeekHawn-pUs",
                      //redirectURI: "https://localhost:3000",
-                    callbackURL: `http://localhost:3001/rsvp/snapchat/callback`,
+                    callbackURL: `https://bubbl-api-0.herokuapp.com/rsvp/snapchat/callback`,
                     //callbackURL: 'http://localhost:3000',
                     profileFields: ['id', 'displayName', 'bitmoji'],
                     scope: ['user.display_name', 'user.bitmoji.avatar'],
