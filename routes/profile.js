@@ -7,7 +7,22 @@ const JWT_KEY = "something_private_and_long_enough_to_secure"
 const router = express()
 
 router.use((req, res, next) => {
-    const token = req.headers['authorization'];
+    var token =""
+
+    if (!req.headers["authorization"]){
+        token = req.headers['token']
+    } else{
+        token = req.headers['authorization'];
+    }
+    
+    
+    
+    //var token = req.headers['token'];
+    
+    //const {token} = req.headers
+    //  if(!token){
+    //      const {token} = req.headers;
+    //  }
 
     //data saved in token
     jwt.verify(token, JWT_KEY, function (err, data) {
@@ -23,6 +38,11 @@ router.use((req, res, next) => {
 
 //create routes to do different actions
 //get user plans
+router.get('/trial', async (req, res) => {
+    //res.status(500).send({ error: "NotAuthorized" })
+    res.json({"sheesh":"lol"})
+    
+})
 
 
 
@@ -30,8 +50,9 @@ router.get('/', async (req, res) => {
     //res.status(500).send({ error: "NotAuthorized" })
     try{
         user = await userService.findById(req.user.docId)
+        res.json({...user, uid: req.user.docId})
 
-        res.send(JSON.stringify(user));
+        //res.send(JSON.stringify(user));
 
     }
     catch(e){

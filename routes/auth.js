@@ -41,20 +41,6 @@ passport.use(new SnapchatStrategy({
     const currentUser = await users.findOrCreate(profile)
     const myUser = {...profile, docId: currentUser}
     cb(null,myUser)
-
-    
-
-    // const current = await users.where("snap","==",profile.id).get().then((result)=>{
-    //   if (result.exists){
-    //     //set cookies
-    //   } else {
-    //     //add bitmoji and info
-    //     const doc =users.add({snap : profile.id})
-    //     console.log(doc)
-    //     //save cookiesfor this user
-
-    //   }
-    // })
     
     
     return cb(null, profile);
@@ -69,15 +55,20 @@ passport.use(new SnapchatStrategy({
 //     next();
 //   });
 
-   router.get('/login/snapchat',
-   passport.authenticate('snapchat'));
+   router.get('/login/snapchat', (req,res,next)=>{
+       next()
+
+   },
+   passport.authenticate('snapchat'),(req,res,next)=>{
+       console.log(req)
+   });
 
   router.get('/login/snapchat/callback',
   passport.authenticate('snapchat'),(req,res,next)=>{
     const token = jwt.sign({docId: req.user.docId}, JWT_KEY, {expiresIn: 60 * 60 * 24 * 1000})
     req.logIn(req.user, function(err) {
         if (err) return next(err); ;
-        res.redirect(`http://localhost:3000/home?token=${token}`)
+        res.redirect(`http://localhost:3000/hostHome?token=${token}`)
       });
       //res.send(req.user)
 

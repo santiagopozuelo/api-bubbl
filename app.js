@@ -34,6 +34,7 @@ const router = express.Router()
 
 app.use('/auth', require('./routes/auth.js'))
 app.use('/profile', require('./routes/profile'))
+app.use('/rsvp', require('./routes/rsvp'))
 
 app.get('/',
   function(req, res) {
@@ -41,4 +42,4 @@ app.get('/',
   });
 
 // start server
-app.listen(3001, () => console.log("Server listening on http://localhost:3001"))
+app.listen(process.env.PORT || 3001, () => console.log("Server listening on http://localhost:3001"))
