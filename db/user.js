@@ -2,6 +2,23 @@ const firestore = require('./firebase.js')
 
 //find or create User inn firebase
 
+async function findOrCreateUser(data){
+    try{
+        const users = await firestore.collection("usersPrueba")
+        const current = await users.where("username","==",data).get()
+        if (!current.empty){
+            return current.docs[0].id
+        } else {
+            const myDoc = await users.add({username: data})
+            return myDoc.id
+        }
+
+    }
+    catch(e){
+        console.log(e)
+    }
+}
+
 async function findOrCreate(oAuthData) {
     try {
         //const users = await firestore.collection("usersPrueba")
@@ -72,6 +89,6 @@ async function findById(oAuthData){
 //     }
 // }
 
-module.exports = {findOrCreate, findById}
+module.exports = {findOrCreate, findById,findOrCreateUser}
 
 //find by id
