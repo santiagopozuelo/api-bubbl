@@ -13,7 +13,7 @@ async function findOrCreate(oAuthData) {
         if (!current.empty){
             return current.docs[0].id
         } else {
-            const myDoc = await users.add({snapId : oAuthData.id, name: oAuthData.displayName})
+            const myDoc = await users.add({snapId : oAuthData.id, name: oAuthData.displayName, bitmoji: oAuthData.bitmoji})
             return myDoc.id
 
         }
