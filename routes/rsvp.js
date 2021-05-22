@@ -41,8 +41,8 @@ var passport_setup = function(){
                     clientID: '68a7e876-119d-487d-8ae4-7e7fc6fde029',
                      clientSecret:  "OMZY9SkQxCwXMkzz2bLMaGs1q6753-tOeekHawn-pUs",
                      //redirectURI: "https://localhost:3000",
-                    //callbackURL: `https://bubbl-api-0.herokuapp.com/rsvp/snapchat/callback`,
-                    callbackURL: 'http://localhost:3001/rsvp/snapchat/callback',
+                    callbackURL: `https://bubbl-api-0.herokuapp.com/rsvp/snapchat/callback`,
+                    //callbackURL: 'http://localhost:3001/rsvp/snapchat/callback',
                     profileFields: ['id', 'displayName', 'bitmoji'],
                     scope: ['user.display_name', 'user.bitmoji.avatar'],
                     pkce: true,
@@ -84,8 +84,8 @@ var passport_setup = function(){
     const token = jwt.sign({docId: req.user.docId}, JWT_KEY, {expiresIn: 60 * 60 * 24 * 1000})
     req.logIn(req.user, function(err) {
         if (err) return next(err); ;
-        //res.redirect(`http://usebubbl.app/posters/${req.session.posterId}?token=${token}`)
-        res.redirect(`http://localhost:3000/posters/${req.session.posterId}?token=${token}`)
+        res.redirect(`http://usebubbl.app/posters/${req.session.posterId}?token=${token}`)
+        //res.redirect(`http://localhost:3000/posters/${req.session.posterId}?token=${token}`)
         //res.status(200).writeHead(302, {Location:`http://localhost:3000/posters/${req.session.posterId}?token=${token}`})
       });
       //res.send(req.user)

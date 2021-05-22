@@ -61,4 +61,23 @@ router.get('/', async (req, res) => {
     
 })
 
+router.get('/plans', async (req, res) => {
+    //res.status(500).send({ error: "NotAuthorized" })
+    try{
+
+
+        var plans = await userService.getPlans(req.user.docId)
+        //res.json({...user, uid: req.user.docId})
+        console.log(plans)
+        res.json({plans:plans})
+
+        //res.send(JSON.stringify(user));
+
+    }
+    catch(e){
+        console.log(e)
+    }
+    
+})
+
 module.exports = router;

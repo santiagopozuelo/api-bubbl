@@ -82,6 +82,146 @@ async function findById(oAuthData){
     
 
 }
+//also get status
+async function getPlans(oAuthData){
+    const planRef = await firestore.collection("plans")
+    const finalPlans=[]
+
+    const myPlansRef = await planRef.where('members','array-contains', oAuthData).get().then((querySnap)=>{
+        querySnap.forEach(doc=>{
+            //const data = doc.data()
+            
+            if(doc.data()){
+                var status= ""
+
+                // var document = doc.ref.collection("people").doc(oAuthData).get().then(res=>{
+                //     console.log(res)
+                //     status = res.data().status
+                // })
+                //.data().status
+                var data = {
+                    id: doc.id,
+                    title: doc.data().title,
+                    emoji: doc.data().emoji,
+                    date: doc.data().date,
+                    // status: status
+                  }
+                  finalPlans.push(data)
+                
+            }
+        })
+    })
+    
+    return finalPlans
+
+    // const myPlans = await planRef.where('members','array-contains', oAuthData)
+    //     .onSnapshot((querySnapshot)=>{
+    //         //can add condition to see their status or if host
+    //         var allPlans =[]
+    //         querySnapshot.forEach(doc=>{
+    //             //const data = doc.data()
+    //             if(doc.data()){
+    //                 var data = {
+    //                     id: doc.id,
+    //                     title: doc.data().title,
+    //                     emoji: doc.data().emoji,
+    //                     date: doc.data().date,
+    //                   }
+    //                   allPlans.push(data)
+                    
+    //             }
+
+                
+
+
+    //         })
+    //         finalPlans.concat(allPlans)
+            
+    //     })
+        //console.log(finalPlans)
+     //   return finalPlans
+}
+
+// async function getPlans(oAuthData){
+//     //oauth is id
+//     //const myUsers = await firestore.collection("usersPrueba")
+//     content = {}
+//     plans=[]
+
+
+//     const thePlans = await firestore.collection("usersPrueba").doc(oAuthData).get().then(result=>{
+//         plans = result.data().plans
+//         console.log(plans)
+//     })
+//     var fullPlans = []
+
+//     const fully = await firestore.collection("plans").get().then(result =>{
+
+//         result.forEach(doc=>{
+//             console.log(doc.id.toString())
+//             if (doc.id.toString() in plans) {
+//                 console.log(doc.id)
+//                 console.log(doc.data())
+//                 fullPlans.push({
+//                     id: doc.id,
+//                     title: doc.data().title,
+//                     emoji: doc.data().emoji,
+//                     date: doc.data().date,
+//                 })
+//             }
+
+            
+
+
+//         })
+
+
+//     })
+
+//     // for (planId in plans)
+
+//     // for (planId in plans){
+//     //     (await firestore.collection("plans").doc(planId).get().then(myDoc=>{
+//     //         fullPlans.push({
+//     //             id: myDoc.id,
+//     //             title: myDoc.data().title,
+//     //             emoji: myDoc.data().emoji,
+//     //             date: myDoc.data().date,
+//     //         })
+//     //     })
+//     //     )
+
+//     // }
+
+    
+
+//     // const userPlans = await thePlans.get().then((snapshot)=>{
+//     //     snapshot.forEach(async doc=>{
+            
+//     //         const myPlans = await doc.ref.collection("people").doc(oAuthData).get().then(result=>{
+//     //             if (result.exists) {
+//     //                 plans.push({
+//     //                     id: result.id,
+//     //                     title: result.data().title,
+//     //                     emoji: result.data().emoji,
+//     //                     date: result.data().date,
+//     //                 })
+
+//     //             }
+
+//     //         })
+            
+//     //         console.log(myPlans)
+//     //         //console.log(userDoc.exists)
+            
+//     //     })
+//     // })
+//     content["plans"] = fullPlans
+//     return content
+        
+    
+
+// }
 
 // async function findById(oAuthData){
 //     try{
@@ -89,6 +229,6 @@ async function findById(oAuthData){
 //     }
 // }
 
-module.exports = {findOrCreate, findById,findOrCreateUser}
+module.exports = {findOrCreate, findById,findOrCreateUser, getPlans}
 
 //find by id
