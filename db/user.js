@@ -111,36 +111,37 @@ async function getPlans(oAuthData){
             }
         })
     })
+    const plansHosting = await planRef.where("host","==",oAuthData).get();
+    plansHosting.forEach(doc=>{
+        var info = {
+            id: doc.id,
+            title: doc.data().title,
+            emoji: doc.data().emoji,
+            date: doc.data().date,
+            isHosting: true
+        }
+        finalPlans.push(info)
+
+    })
     
+
+   
+
+
     return finalPlans
 
-    // const myPlans = await planRef.where('members','array-contains', oAuthData)
-    //     .onSnapshot((querySnapshot)=>{
-    //         //can add condition to see their status or if host
-    //         var allPlans =[]
-    //         querySnapshot.forEach(doc=>{
-    //             //const data = doc.data()
-    //             if(doc.data()){
-    //                 var data = {
-    //                     id: doc.id,
-    //                     title: doc.data().title,
-    //                     emoji: doc.data().emoji,
-    //                     date: doc.data().date,
-    //                   }
-    //                   allPlans.push(data)
-                    
-    //             }
-
-                
-
-
-    //         })
-    //         finalPlans.concat(allPlans)
-            
-    //     })
-        //console.log(finalPlans)
-     //   return finalPlans
+    
 }
+
+async function createPlan(planData){
+
+    const plan = await firestore.collection("plans").add(planData)
+    console.log("plan")
+    console.log(plan)
+    return plan
+
+
+} 
 
 // async function getPlans(oAuthData){
 //     //oauth is id
@@ -229,6 +230,6 @@ async function getPlans(oAuthData){
 //     }
 // }
 
-module.exports = {findOrCreate, findById,findOrCreateUser, getPlans}
+module.exports = {findOrCreate, findById,findOrCreateUser, getPlans, createPlan}
 
 //find by id

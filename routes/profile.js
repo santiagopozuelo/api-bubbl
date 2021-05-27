@@ -80,4 +80,21 @@ router.get('/plans', async (req, res) => {
     
 })
 
+router.post('/plans', async (req,res)=> {
+    try {
+        //var info = JSON.parse(req.body)
+        console.log(req.body)
+        //console.log(info)
+        var planId = await userService.createPlan(req.body)
+
+
+        res.status(200).json({response: planId.id})
+    }
+    catch(e){
+        console.log("error")
+        console.log(e)
+    }
+})
+
+
 module.exports = router;

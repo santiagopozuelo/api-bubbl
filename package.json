@@ -12,6 +12,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "firebase-admin": "^9.6.0",
+    "heroku": "^7.54.0",
     "jsonwebtoken": "^8.5.1",
     "passport": "^0.4.1",
     "passport-custom": "^1.1.1",

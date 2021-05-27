@@ -36,6 +36,7 @@ app.use('/auth', require('./routes/auth.js'))
 app.use('/profile', require('./routes/profile'))
 app.use('/rsvp', require('./routes/rsvp'))
 app.use('/login', require('./routes/login'))
+app.use('/login', require('./routes/onboard'))
 //app.use('hostToken', require('./routes/hostToken'))
 
 app.get('/',
