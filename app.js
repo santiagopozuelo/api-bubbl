@@ -4,7 +4,13 @@ const passport = require('passport');
 const admin = require('firebase-admin');
 
 
+
 const fire = require('./db/firebase.js')
+
+console.log(`Your port is ${process.env.BUBBL_URL}`); // undefined
+const dotenv = require('dotenv');
+dotenv.config();
+console.log(`Your port is ${process.env.BUBBL_URL}`); // 8626
 
 
 const app = express();
