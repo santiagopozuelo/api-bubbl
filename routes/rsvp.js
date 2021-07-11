@@ -57,8 +57,10 @@ var passport_setup = function(){
                 
                     //uid of doc returned
                     console.log(req.query)
+                    console.log(profile)
                     const currentUser = await users.findOrCreate(profile)
                     const myUser = {...profile, docId: currentUser}
+                    console.log(myUser)
                     cb(null,myUser)
                     
                     
