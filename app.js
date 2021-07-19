@@ -2,20 +2,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const admin = require('firebase-admin');
-
-
-
+const functions = require('firebase-functions');
 const fire = require('./db/firebase.js')
-
-console.log(`Your port is ${process.env.BUBBL_URL}`); // undefined
 const dotenv = require('dotenv');
 dotenv.config();
+
+console.log(`Your port is ${process.env.BUBBL_URL}`); // undefined
 console.log(`Your port is ${process.env.BUBBL_URL}`); // 8626
 
 
 const app = express();
-// Parse json encoded in the request body
 app.use(bodyParser.json({ limit: '50mb' }));
+
 app.use(require('express-session')({
     secret: "whatever",
     resave: true,
@@ -29,20 +27,113 @@ app.use((_, res, next) => {
     next();
 })
 
-app.use(passport.initialize());
+// app.use(passport.initialize());
 
-passport.serializeUser(function (user, cb) {
-  cb(null, user);
-});
+// passport.serializeUser(function (user, cb) {
+//   cb(null, user);
+// });
 
 const router = express.Router()
 
+//PLANS
+ const {
+   modifyPlanStatus,
+//   deletePlan,
+//   loadFeedPlans,
+   createPlan,
+//   editPlanPeople,
+//   getPlan,
+ } = require('./routes/plans.js')
 
-app.use('/auth', require('./routes/auth.js'))
-app.use('/profile', require('./routes/profile'))
-app.use('/rsvp', require('./routes/rsvp'))
-app.use('/login', require('./routes/login'))
-app.use('/login', require('./routes/onboard'))
+//PLANS
+// app.get("/plans/publicfeed", loadFeedPlans)
+app.put("/plans/:planId", modifyPlanStatus)
+// app.get("/plans/:planId",getPlan)
+ app.post("/plans", createPlan)
+// app.delete("/plans/:planId", deletePlan)
+//people
+// app.put("/plans/people", editPlanPeople)
+
+
+//CHAT'
+// const {
+//   getPlanChats,
+//   editPlanChat,
+//   addPlanChat
+// } = require('./routes/chats.js')
+
+// app.get("/chats" ,getPlanChats)
+// app.post("/chats",addPlanChat)
+// app.put("/chats",editPlanChat)
+
+
+//CLUBS
+// const {
+//   createClub,
+//   editClubDetails,
+//   editClubFollowers,
+//   deleteClub,
+//   viewAllClubs,
+// } = require('./routes/clubs.js')
+
+// app.get("/clubs/all", viewAllClubs)
+// app.post('/clubs', createClub)
+// app.delete('/clubs/:clubId', deleteClub)
+// app.put('/clubs/:clubId', editClubDetails)
+// app.put('/clubs/followers', editClubFollowers)
+
+//USER
+const {
+  //getUserProfile,
+  //updateUserProfile,
+  //editProfileImage,
+  //getProfileImage,
+  registerUser,
+  CalendarPlans,
+  getUserIfExists
+} = require('./routes/user.js')
+
+// app.get("user/plans", getMyBubblesFeed)
+// app.get("/user/profileimage", getProfileImage)
+// app.post("/user/profileimage",editProfileImage)
+app.get("/user/calendarplans/:userId", CalendarPlans)
+app.post("/user", registerUser)
+// app.put("user/profile", updateUserProfile)
+// app.get("user/profile",getUserProfile )
+app.get("/user/:user_id",getUserIfExists)
+
+//AUTH
+// const {
+//   signUpUser,
+//   loginUser,
+// } = require('./routes/auth')
+
+// app.post('/login', loginUser);
+// app.post('/signup', signUpUser);
+
+//FRIENDS
+ const {
+  //  getFriends
+//   getAllPeople,
+//   editFriends,
+//   getAllFriends,
+   addFriend,
+//   getFriend
+ } = require("./routes/people.js", )
+
+ app.post("/people/friends/add", addFriend)
+
+// app.get("/people", getAllPeople)
+// app.get("/people/friends",getAllFriends)
+// app.put("/people/friends/:friendId",editFriend)
+// app.post("/people/friends/:friendId",addFriend)
+// app.post("/people/friends/:friendId",getFriend)
+
+
+
+//CLUB TO PLANS RELATIONSHIP
+
+//app.use('/plans', )
 //app.use('hostToken', require('./routes/hostToken'))
 
 app.get('/',

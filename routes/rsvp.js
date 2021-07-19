@@ -3,8 +3,7 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const firestore = require('../db/firebase.js')
 const SnapchatStrategy = require('passport-snapchat').Strategy;
-//const findOrCreate = require("../db/user.js")
-const users = require('../db/user.js');
+const users = require('../db/userService.js');
 const JWT_KEY = "something_private_and_long_enough_to_secure"
 
 const router = express();
