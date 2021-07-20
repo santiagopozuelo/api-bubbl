@@ -113,22 +113,19 @@ app.get("/user/:user_id",getUserIfExists)
 
 //FRIENDS
  const {
-  //  getFriends
-//   getAllPeople,
-//   editFriends,
-//   getAllFriends,
+   removeFriend,
+   getPersonRelationship,
    addFriend,
-//   getFriend
+   acceptFriendRequest,
+   getFriends,
  } = require("./routes/people.js", )
 
  app.post("/people/friends/add", addFriend)
-
-// app.get("/people", getAllPeople)
-// app.get("/people/friends",getAllFriends)
-// app.put("/people/friends/:friendId",editFriend)
-// app.post("/people/friends/:friendId",addFriend)
-// app.post("/people/friends/:friendId",getFriend)
-
+ //app.get("/people/all")
+ app.post("/people/friends/accept",acceptFriendRequest)
+ app.get("/people/friends", getFriends)
+ app.get("/people/relationship", getPersonRelationship)
+ app.delete("/people/friends", removeFriend)
 
 
 //CLUB TO PLANS RELATIONSHIP

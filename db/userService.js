@@ -33,6 +33,25 @@ async function createUser(userInfo) {
 
 }
 
+async function getUsernameById(userId)
+{
+    try {
+        var username
+        var userRef = await db.collection(UsersTable).doc(userId).get().then(snapshot =>{
+            if (snapshot.exists && snapshot.data()!= null) {
+                console.log("user exists") 
+                var info = snapshot.data()
+                console.log(info)
+                username = info["username"]
+                
+            }
+        })
+        return username
+
+    } catch(err) {
+        console.log(err)
+    }
+}
 
 async function getPlansGoingHosting(userId) {
 
@@ -392,6 +411,6 @@ async function createPlan(planData){
 
 //ADD
 //getMyPlans, 
-module.exports = { createUser, getPlansGoingHosting,findOrCreate, findById,findOrCreateUser, getPlans, createPlan, getUserById,getListPlansHosting,getListPlansGoing}
+module.exports = { getUsernameById, createUser, getPlansGoingHosting,findOrCreate, findById,findOrCreateUser, getPlans, createPlan, getUserById,getListPlansHosting,getListPlansGoing}
 
 //find by id
