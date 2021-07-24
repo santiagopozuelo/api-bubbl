@@ -39,48 +39,33 @@ const router = express.Router()
  const {
    modifyPlanStatus,
 //   deletePlan,
-//   loadFeedPlans,
+   loadFeedPlans,
    createPlan,
-//   editPlanPeople,
-//   getPlan,
+   getPlan,
+    addPlanPeople
  } = require('./routes/plans.js')
 
 //PLANS
-// app.get("/plans/publicfeed", loadFeedPlans)
+app.post("/plans/people/add", addPlanPeople)
+app.get("/plans/:planId",getPlan)
+
+
 app.put("/plans/:planId", modifyPlanStatus)
 // app.get("/plans/:planId",getPlan)
  app.post("/plans", createPlan)
+ // app.get("/plans/publicfeed", loadFeedPlans)
 // app.delete("/plans/:planId", deletePlan)
-//people
 // app.put("/plans/people", editPlanPeople)
 
 
-//CHAT'
-// const {
-//   getPlanChats,
-//   editPlanChat,
-//   addPlanChat
-// } = require('./routes/chats.js')
+//PLANS PEOPLE
+const {
+  getProfilePlans,
+  editPeopleStatus
+} = require('./routes/planPeople.js')
 
-// app.get("/chats" ,getPlanChats)
-// app.post("/chats",addPlanChat)
-// app.put("/chats",editPlanChat)
-
-
-//CLUBS
-// const {
-//   createClub,
-//   editClubDetails,
-//   editClubFollowers,
-//   deleteClub,
-//   viewAllClubs,
-// } = require('./routes/clubs.js')
-
-// app.get("/clubs/all", viewAllClubs)
-// app.post('/clubs', createClub)
-// app.delete('/clubs/:clubId', deleteClub)
-// app.put('/clubs/:clubId', editClubDetails)
-// app.put('/clubs/followers', editClubFollowers)
+app.get("/plans/people/profile/:userId", getProfilePlans)
+app.post("/plans/people", editPeopleStatus)
 
 //USER
 const {
@@ -118,20 +103,16 @@ app.get("/user/:user_id",getUserIfExists)
    addFriend,
    acceptFriendRequest,
    getFriends,
+   getAllPeople
  } = require("./routes/people.js", )
 
  app.post("/people/friends/add", addFriend)
- //app.get("/people/all")
+ app.get("/people/all", getAllPeople)
  app.post("/people/friends/accept",acceptFriendRequest)
- app.get("/people/friends", getFriends)
- app.get("/people/relationship", getPersonRelationship)
+ app.post("/people/friends", getFriends)
+ app.post("/people/relationship", getPersonRelationship)
  app.delete("/people/friends", removeFriend)
 
-
-//CLUB TO PLANS RELATIONSHIP
-
-//app.use('/plans', )
-//app.use('hostToken', require('./routes/hostToken'))
 
 app.get('/',
   function(req, res) {
@@ -140,3 +121,34 @@ app.get('/',
 
 // start server
 app.listen(process.env.PORT || 3001, () => console.log("Server listening on http://localhost:3001"))
+
+
+
+
+
+//CHAT'
+// const {
+//   getPlanChats,
+//   editPlanChat,
+//   addPlanChat
+// } = require('./routes/chats.js')
+
+// app.get("/chats" ,getPlanChats)
+// app.post("/chats",addPlanChat)
+// app.put("/chats",editPlanChat)
+
+//CLUBS
+// const {
+//   createClub,
+//   editClubDetails,
+//   editClubFollowers,
+//   deleteClub,
+//   viewAllClubs,
+// } = require('./routes/clubs.js')
+
+// app.get("/clubs/all", viewAllClubs)
+// app.post('/clubs', createClub)
+// app.delete('/clubs/:clubId', deleteClub)
+// app.put('/clubs/:clubId', editClubDetails)
+// app.put('/clubs/followers', editClubFollowers)
+
