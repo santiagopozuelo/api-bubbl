@@ -1,6 +1,9 @@
 {
   "name": "api-bubbl",
   "version": "1.0.0",
+  "engines": {
+    "node": "16.2.0"
+  },
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -9,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@heroku/buildpack-registry": "^1.0.1",
     "cjs-loader": "^0.1.0",
     "clean": "^4.0.2",
     "core-util-is": "^1.0.2",
