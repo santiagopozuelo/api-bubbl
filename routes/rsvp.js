@@ -3,8 +3,7 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const firestore = require('../db/firebase.js')
 const SnapchatStrategy = require('passport-snapchat').Strategy;
-//const findOrCreate = require("../db/user.js")
-const users = require('../db/user.js');
+const users = require('../db/userService.js');
 const JWT_KEY = "something_private_and_long_enough_to_secure"
 
 const router = express();
@@ -57,8 +56,10 @@ var passport_setup = function(){
                 
                     //uid of doc returned
                     console.log(req.query)
+                    console.log(profile)
                     const currentUser = await users.findOrCreate(profile)
                     const myUser = {...profile, docId: currentUser}
+                    console.log(myUser)
                     cb(null,myUser)
                     
                     

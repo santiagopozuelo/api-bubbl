@@ -1,6 +1,6 @@
 // api/routes/profile.js
 const express = require('express');
-const userService = require('../db/user')
+const userService = require('../db/userService')
 const jwt = require('jsonwebtoken');
 const JWT_KEY = "something_private_and_long_enough_to_secure"
 
