@@ -10,15 +10,31 @@ const UsersTable = process.env.USERS_TABLE
 
 async function getUserById(userId) {
     const userRef = await db.collection(UsersTable).doc(userId)
-    var content ={}
+    var content
     var info = await userRef.get().then((userInfo)=> {
-        content = userInfo.data()
+        if (userInfo.exists && userInfo.data() !=null){
+            content = userInfo.data()
+        }
+        
 
     })
     console.log("info getting user")
     console.log(content)
     return content
 
+}
+
+async function getPlanStatus(userId, planId) {
+    const userRef = await db.collection(UsersTable).doc(userId)
+    var status = await userRef.collection(PlansTable).doc(planId).get().then(snap=>{
+        if (snap.exists && snap.data() != null) {
+            return snap.data()["status"]
+        } else {
+            return "uninvited"
+        }
+
+    })
+    return status
 }
 
 async function createUser(userInfo) {
@@ -151,8 +167,9 @@ async function getPlansGoingHosting(userId) {
 async function getListPlansGoing(userId) {
     const userRef = await db.collection(UsersTable).doc(userId)
     var plans = []
+    var expireTime = Date()
     var info = await userRef.collection(PlansTable).where("status","==","going")
-    .where("createdAt",">=", new Date()).get().then(docs => {
+    .where("createdAt",">=", expireTime).get().then(docs => {
         console.log("yy")
         docs.forEach(doc=> {
             plans.push(doc.id)
@@ -411,6 +428,6 @@ async function createPlan(planData){
 
 //ADD
 //getMyPlans, 
-module.exports = { getUsernameById, createUser, getPlansGoingHosting,findOrCreate, findById,findOrCreateUser, getPlans, createPlan, getUserById,getListPlansHosting,getListPlansGoing}
+module.exports = { getPlanStatus, getUsernameById, createUser, getPlansGoingHosting,findOrCreate, findById,findOrCreateUser, getPlans, createPlan, getUserById,getListPlansHosting,getListPlansGoing}
 
 //find by id
