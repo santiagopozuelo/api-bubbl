@@ -2,9 +2,50 @@ const express = require('express');
 const {db} = require('../db/firebase.js')
 const router = express();
 const planService = require("../db/planService")
+const userService = require("../db/userService")
+const planPeopleService = require("../db/planPeopleService")
 
 
 const {findOrCreate, users, } = require("../db/userService.js")
+
+exports.addPlanPeople = async (req, res) => {
+    //body:
+        //userId
+        //planId
+        //people
+    var userId = req.body.userId
+    var planId = req.body.planId
+    var peopleList = req.body.peopleList
+    var myUser = await userService.getUserById(userId)
+    if (myUser == null) {
+        return res.status(500).json({response: "error no userId exists"})
+    }
+    var info = await planPeopleService.tagPlanPeople(userId,planId,peopleList)
+    
+    return res.status(200).json({response: info})
+
+    //tagPlanPeople
+
+    //check plan exists
+    //addPlanPeople service
+        //add plans to users status:invited, lead: personId, updatedAt
+    //check plan exists
+    //
+
+
+}
+
+exports.getPlan= async (req,res)=> {
+    var planId = req.params.planId
+
+    var result = await planService.getPlanById(planId)
+    if (result != null) {
+        return res.status(200).json({response: result})
+    } else {
+        return res.status(500).json({response: null})
+    }
+
+}
 
 
 exports.getAllPlans = (request, response) => {
@@ -67,6 +108,7 @@ exports.createPlan = async (req, res) => {
         var planInfo = {
             host: hostId,
             createdAt: Date(),
+            updatedAt: Date(),
             ...req.body
         }
         var plan = await planService.createPlan(planInfo)
@@ -74,10 +116,18 @@ exports.createPlan = async (req, res) => {
         //var info = await planService.duplicateMembership(plan, user)
         var info = await planService.setUserHost(plan.id, hostId)
         //create update message on join
+        if (info == true) {
+            var mess = {response: info,  }
+            return res.status(200).json({response: info,planId: plan.id})
+        } else {
+            var mess = {response:info}
+            return res.status(500).send(mess);
+        }
+        
 
         //affiliate member To Plan
         //affiliate plan to user
-        return res.status(200).json({response: info})
+        
 
       } catch (error) {
         console.log(error);
