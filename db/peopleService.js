@@ -1,3 +1,4 @@
+const { query } = require('express')
 const {db}= require('./firebase.js')
 
 
@@ -5,6 +6,25 @@ const PlansTable = process.env.PLANS_TABLE
 const UsersTable = process.env.USERS_TABLE
 const PlansPeople = process.env.PLANS_PEOPLE
 const FriendsTable = process.env.FRIENDS_TABLE
+
+
+async function getAllPeople() {
+    var peopleRef =  await db.collection(UsersTable).get().then(async querySnapshot=>{
+        if (!querySnapshot.empty) {
+            console.log("getting each user")
+            var results = await querySnapshot.docs.map(doc=> doc.data())
+            return results
+            // querySnapshot.docs.forEach(doc=> {
+
+            // })
+        } else {
+            return []
+        }
+    })
+
+    console.log(peopleRef)
+    return peopleRef
+}
 
 async function getUserFriends(userId) {
     var results = []
@@ -50,6 +70,13 @@ async function getFriendStatus(userId, otherId) {
         if (snapshot.exists && snapshot.data()!=null) {
             var info = snapshot.data()            
             var status = info["status"]
+            if (status == "pending") {
+                if (info["sentByMe"] == true) {
+                    status = "sent"
+                } else {
+                    status = "received"
+                }
+            }
             console.log(status)
             return status
         }
@@ -127,6 +154,8 @@ async function acceptFriendRequest() {
 }
 
 
+
+
 async function getUserFriends(userId) {
     var friendsRef = db.collection(FriendsTable).doc(userId)
     var people =[]
@@ -135,7 +164,7 @@ async function getUserFriends(userId) {
         .where("status","==","accepted").get().then(querySnapshot=>{
             querySnapshot.forEach(doc =>{
                 var info = doc.data()
-                people.push({userId:info["id"], username: info["username"]})
+                people.push({uid:info["id"], username: info["username"]})
                 //people.push(info["id"])
                 return doc.data()
 
@@ -207,4 +236,4 @@ async function acceptRequest(userId,otherId) {
 }
 
 
-module.exports = { sendRequest, getFriendRequests, getUserFriends, getFriendStatus, acceptRequest, deleteFriend}
+module.exports = { getAllPeople, sendRequest, getFriendRequests, getUserFriends, getFriendStatus, acceptRequest, deleteFriend}
