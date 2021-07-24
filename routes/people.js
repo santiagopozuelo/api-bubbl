@@ -37,9 +37,10 @@ exports.removeFriend = async (req,res) => {
     if (response) {
         return res.status(200).json({response: response})
     } else {
-        return res.status(500).json({response: false})
+        return res.status(200).json({response: false})
     }
 }
+
 
 
 exports.getPersonRelationship = async(req,res) =>{
@@ -50,7 +51,7 @@ exports.getPersonRelationship = async(req,res) =>{
     if (myInfo) {
         return res.status(200).json({status:myInfo})
     } else {
-        return res.status(500).json({status: "not"})
+        return res.status(200).json({status: "not"})
     }
 
 }
@@ -66,10 +67,25 @@ exports.acceptFriendRequest = async (req,res) => {
     console.log(ans)
 
     if(ans == true) {
-        return res.status(200).json({response: ans})
+        return res.status(200).json({success: ans})
     } else {
-        return res.status(500).json({response: ans})
+        return res.status(200).json({success: ans})
     }
+}
+
+exports.getAllPeople = async (req,res) => {
+    try {
+        
+        var info = await peopleService.getAllPeople()
+        var response = {response: info, success: true}
+        return res.status(200).json(response)
+
+
+    } catch (e) {
+        console.log(e)
+        return res.status(500).send(e)
+    }
+
 }
 
 exports.addFriend = async (req, res) => {
@@ -93,7 +109,7 @@ exports.addFriend = async (req, res) => {
         //     sentByMe: false
         // }
         console.log(ans)
-        return res.status(200).json({response: ans})
+        return res.status(200).json({success: ans})
 
       } catch (error) {
         console.log(error);
@@ -107,7 +123,9 @@ exports.getFriends= async (req,res)=> {
     var friends = await peopleService.getUserFriends(userId)
 
     if (friends) {
-        return res.status(200).json({friends: friends})
+        var response = {response:friends, success: true}
+
+        return res.status(200).json(response)
     } else {
         return res.status(500).json({friends: []})
     }
