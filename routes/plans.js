@@ -47,6 +47,37 @@ exports.getPlan= async (req,res)=> {
 
 }
 
+exports.loadFeedPlans = async (req, res) => {
+    try {
+        console.log("loading plans from feed")
+        var userId = req.params.userId
+        var userRef = await db.collection('beta-users').doc(userId)
+        var myPlans = []
+        var plans = await userRef.collection("beta-plans").get().then((querySnap) =>{
+
+            var info = querySnap.docs.forEach((doc)=> {
+                if (doc.exists && doc.data()!=null) {
+                    console.log("first plan")
+                    console.log("status")
+
+                    myPlans.push([doc.id, doc.data()["status"]])
+                }
+
+            })
+
+        })
+        return res.status(200).json({response: myPlans, success: true})
+    } catch (error) {
+        console.log("error ocurred")
+        console.log(error)
+        return res.status(500).json({success: false})
+
+    }
+
+    //db.collection('beta-users').doc()
+
+}
+
 
 exports.getAllPlans = (request, response) => {
 	db
@@ -98,33 +129,91 @@ exports.modifyPlanStatus = async (req,res)=> {
 
 }
 
-exports.createPlan = async (req, res) => {
+exports.createPublicPlan = async (req,res) => {
     try {
-        //receives body with plan info
-        //receives userId of host
-        var hostId = req.query.host_id
-
+        //validate info with schema
+        //title cant be null
+        var host = req.body.host
         console.log(req.body)
+        var date = new Date(req.body.date)
         var planInfo = {
-            host: hostId,
-            createdAt: Date(),
-            updatedAt: Date(),
-            ...req.body
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            title: req.body.title,
+            emoji: req.body.emoji,
+            description: req.body.description,
+            date: date,
+            host: req.body.host,
+            visibility: req.body.visibility
+
         }
         var plan = await planService.createPlan(planInfo)
+        //add plan to public list in location
         
         //var info = await planService.duplicateMembership(plan, user)
-        var info = await planService.setUserHost(plan.id, hostId)
+        var info = await planService.setUserHost(plan.id, host)
+        //add people to plan
+
         //create update message on join
         if (info == true) {
-            var mess = {response: info,  }
-            return res.status(200).json({response: info,planId: plan.id})
+            //var mess = {response: info,  }
+            return res.status(200).json({success: info, response: plan.id})
         } else {
-            var mess = {response:info}
+            var mess = {success:info}
             return res.status(500).send(mess);
         }
+        //affiliate member To Plan
+        //affiliate plan to user
         
 
+      } catch (error) {
+        console.log(error);
+        return res.status(500).send(error);
+      }
+
+}
+
+exports.createPlan = async (req, res) => {
+    try {
+        //validate info with schema
+        //title cant be null
+        var host = req.body.host
+        console.log(req.body)
+        var date = new Date(req.body.date)
+        var planInfo = {
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            title: req.body.title,
+            emoji: req.body.emoji,
+            description: req.body.description,
+            date: date,
+            host: req.body.host,
+            visibility: req.body.visibility || null,
+        }
+        var plan = await planService.createPlan(planInfo)
+        var people = req.body.people
+        console.log("printing peopole")
+        console.log(people)
+        console.log(plan)
+        
+        //var info = await planService.duplicateMembership(plan, user)
+        
+        var info = await planService.setUserHost(plan.id, host)
+        var added
+        if (people != null) {
+            added = await planPeopleService.tagPlanPeople(host,plan.id, people)
+            console.log("people added")
+            console.log(added)
+        }
+        //create update message on join
+        if (info == true) {
+            //var mess = {response: info, }
+            //var resp = {planId: plan.id, peopleIds: added}
+            return res.status(200).json({success: info, response: plan.id})
+        } else {
+            var mess = {success:info}
+            return res.status(500).send(mess);
+        }
         //affiliate member To Plan
         //affiliate plan to user
         
