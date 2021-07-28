@@ -41,6 +41,7 @@ const router = express.Router()
 //   deletePlan,
    loadFeedPlans,
    createPlan,
+   createPublicPlan,
    getPlan,
     addPlanPeople
  } = require('./routes/plans.js')
@@ -48,11 +49,13 @@ const router = express.Router()
 //PLANS
 app.post("/plans/people/add", addPlanPeople)
 app.get("/plans/:planId",getPlan)
+app.get("/plans/feed/:userId", loadFeedPlans)
 
 
 app.put("/plans/:planId", modifyPlanStatus)
 // app.get("/plans/:planId",getPlan)
  app.post("/plans", createPlan)
+ app.post("/plans/public", createPublicPlan)
  // app.get("/plans/publicfeed", loadFeedPlans)
 // app.delete("/plans/:planId", deletePlan)
 // app.put("/plans/people", editPlanPeople)

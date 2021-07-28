@@ -45,7 +45,7 @@ async function updatePlan(userId,planId, lastMessage) {
     console.log("updating plan with lastmesss")
     var planRef =  await db.collection(PlansTable).doc(planId)
 
-    var update = await planRef.update({updatedAt: Date(), lastMessage: lastMessage})
+    var update = await planRef.update({updatedAt: new Date(), lastMessage: lastMessage})
     console.log(update)
 
     planRef.collection("seen").get().then(querySnap=>{
@@ -218,7 +218,7 @@ async function setUnseen(userId,planId) {
 }
 async function setSeen(userId,planId) {
     var repSeen = await db.collection(PlansTable).doc(planId).collection("seen").doc(userId).set({seen: true})
-    return repseen
+    return repSeen
 }
 
 
@@ -242,7 +242,7 @@ async function tagPlanPeople(userId, planId, peopleList) {
         console.log("inside loop")
         console.log(person)
         var response = await peopleRef.doc(person).collection(PlansTable).doc(planId).set({status:"invited",  invitedBy: userId, updatedAt: Date()})
-        var response2 = await subPeopleRef.doc(person).set({status:"invited",  invitedBy: userId, updatedAt: Date()})
+        var response2 = await subPeopleRef.doc(person).set({status:"invited",  invitedBy: userId, updatedAt: new Date()})
         setUnseen(person,planId)
         console.log(response)
         console.log(response2)
