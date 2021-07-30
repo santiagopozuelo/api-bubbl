@@ -100,4 +100,4 @@ async function getListPlans(listIds) {
 }
 
 
-module.exports = { getPlanById, createPlan, getListPlans, setUserHost, }
+module.exports = { getPlanById, createPlan, getListPlans}
