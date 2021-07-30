@@ -111,13 +111,13 @@ exports.modifyPlanStatus = async (req,res)=> {
     var info;
     if (newStatus == "down"){
         console.log("setting down")
-        info = await planService.setUserDown(planId, userId)
+        info = await planPeopleService.setUserDown(planId, userId)
     }else if (newStatus == "maybe"){
         console.log("setting maybe")
-        info = await planService.setUserMaybe(planId, userId)
+        info = await planPeopleService.setUserMaybe(planId, userId)
     } else if (newStatus == "host") {
         console.log("setting maybe")
-        info = await planService.setUserHost(planId, userId)
+        info = await planPeopleService.setUserHost(planId, userId)
     }
 
     if (info != null){
@@ -151,7 +151,7 @@ exports.createPublicPlan = async (req,res) => {
         //add plan to public list in location
         
         //var info = await planService.duplicateMembership(plan, user)
-        var info = await planService.setUserHost(plan.id, host)
+        var info = await planPeopleService.setUserHost(plan.id, host)
         //add people to plan
 
         //create update message on join
@@ -198,7 +198,7 @@ exports.createPlan = async (req, res) => {
         
         //var info = await planService.duplicateMembership(plan, user)
         
-        var info = await planService.setUserHost(plan.id, host)
+        var info = await planPeopleService.setUserHost(plan.id, host)
         var added
         if (people != null) {
             added = await planPeopleService.tagPlanPeople(host,plan.id, people)
@@ -224,6 +224,8 @@ exports.createPlan = async (req, res) => {
       }
 }
 
+
+//delete plam
 
 
 router.get("/", (req,res,next) => {

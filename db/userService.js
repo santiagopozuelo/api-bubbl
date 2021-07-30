@@ -1,6 +1,8 @@
 const { response } = require('express')
-const {db }= require('./firebase.js')
+//const { DocumentBuilder } = require('firebase-functions/lib/providers/firestore')
+const {db,admin }= require('./firebase.js')
 const planService = require("./planService.js")
+
 
 
 const PlansTable = process.env.PLANS_TABLE
@@ -69,6 +71,73 @@ async function getUsernameById(userId)
     }
 }
 
+async function getPlansProfile(userId) {
+    try {
+        const userRef = await db.collection(UsersTable).doc(userId).get()
+        const plansRef = await db.collection(PlansTable)
+        const plansSubref = await userRef.ref.collection(PlansTable)
+        console.log("getting profile plans")
+        var finalPlans = []
+
+        await plansSubref.get().then(async querySnapshot=>{
+            //querySnapshot.docs.
+            for (var i in querySnapshot.docs) {
+                var snapshot = querySnapshot.docs[i]
+            //}
+            //await querySnapshot.forEach(async (snapshot) =>{
+                var subPlanInfo = snapshot.data()
+                var planStatus = subPlanInfo.status
+                var jsonData = {
+                    "plan": {},
+                    "status": ""
+                }
+                console.log(subPlanInfo)
+
+                if(planStatus = "host" || planStatus == "going") {
+                    var planId = snapshot.id
+                    console.log(`planid: ${planId} status: ${planStatus}`)
+
+                    await plansRef.doc(planId).get().then(snap => {
+                        if (snap !=null) {
+                            console.log(snap.data())
+                            jsonData["plan"] = snap.data()
+                            jsonData["status"] = planStatus
+                            finalPlans.push(jsonData)
+
+                        }
+
+                    })
+                    // var planInfo = await planService.getPlanById(planId)
+                    // console.log(planInfo)
+                    // jsonData["plan"] = planInfo
+                    // jsonData["status"] = planStatus
+                    //finalPlans.push(jsonData)
+
+                }
+            } //)
+        })
+        finalPlans.sort(function(a, b) {
+            return new Date(a["plan"].date) - new Date(b["plan"].date) ;
+          });
+    
+        ///const results = await Promise.all(completePlans);
+        console.log("after")
+        console.log(finalPlans)
+        return finalPlans
+
+
+
+
+    }catch(err) {
+        console.log(err)
+        return err
+
+    }
+}
+
+//get planIds,
+//for each get PlanModel and status
+
 async function getPlansGoingHosting(userId) {
 
     try {
@@ -80,13 +149,16 @@ async function getPlansGoingHosting(userId) {
 
     //get User Going and hosting planIds,
     //order plans and get actual info
+    var finalData = {
+        plans: []
+    }
 
     var finalPlans = []
     await plansSubref.get().then(querySnapshot=>{
         querySnapshot.forEach((snapshot) =>{
             console.log(snapshot.data())
             if (snapshot.data() != null) {
-                //finalPlans.push([snapshot.id, snapshot.data().status])
+                finalPlans.push([snapshot.id, snapshot.data().status])
                 finalPlans.push(snapshot.id)
             }
         })
@@ -96,9 +168,28 @@ async function getPlansGoingHosting(userId) {
     var completePlans = []
     for (var i = 0; i< finalPlans.length;i++) {
         var data = await planService.getPlanById(finalPlans[i])
-        console.log("data in loop")
-        console.log(data)
-        completePlans.push(data)
+        if (data !=null) {
+
+            var startingDate = new Date()
+            console.log(startingDate)
+            //var planDate = new Date(data["date"])
+           // var planDate = admin.firestore.FieldValue.toString(data["date"])
+            //console.log(`plan date is ${planDate}`)
+
+            //if (startingDate <= data["date"]) {
+
+                console.log("date is good")
+                console.log(data)
+                completePlans.push(data)
+
+           // }
+
+        }
+
+
+
+
+
     }
     completePlans.sort(function(a, b) {
         return new Date(a.createdAt) - new Date(b.createdAt) ;
@@ -428,6 +519,6 @@ async function createPlan(planData){
 
 //ADD
 //getMyPlans, 
-module.exports = { getPlanStatus, getUsernameById, createUser, getPlansGoingHosting,findOrCreate, findById,findOrCreateUser, getPlans, createPlan, getUserById,getListPlansHosting,getListPlansGoing}
+module.exports = { getPlansProfile,getPlanStatus, getUsernameById, createUser, getPlansGoingHosting,findOrCreate, findById,findOrCreateUser, getPlans, createPlan, getUserById,getListPlansHosting,getListPlansGoing}
 
 //find by id

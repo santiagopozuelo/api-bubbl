@@ -1,11 +1,11 @@
 const {db}= require('./firebase.js')
 
-const userService = require("./userService.js")
-const planPeopleService = require("./planPeopleService.js")
+//const userService = require("./userService.js")
+//const planPeopleService = require("./planPeopleService.js")
 const PlansTable = process.env.PLANS_TABLE
 const UsersTable = process.env.USERS_TABLE
 const PlansPeople = process.env.PLANS_PEOPLE
-const {changeStatus} = planPeopleService
+//const {changeStatus} = planPeopleService
 
 
 
@@ -25,13 +25,7 @@ async function createPlan(planData) {
     return val;
 }
 
-async function setUserHost(planId, userId) {
 
-    const response = await changeStatus(userId, planId, "host")
-    return response
-    
-
-}
 
 
 async function getPlanById(planId) {
@@ -39,12 +33,15 @@ async function getPlanById(planId) {
     var ans = await db.collection(PlansTable).doc(planId).get().then(snap=>{
         if (snap.data() != null) {
             var info = snap.data()
+            console.log("in snap of plan by id")
             //format into plan struct
             console.log(info)
             return info
+        } else {
+            return null
         }
     })
-    return ans
+    //return ans
 }
 
 async function getPlanRef(planId) {
@@ -67,14 +64,6 @@ async function getUserRef(userId) {
 
 
 
-async function setUserDown(planId,userId) {
-    const response = await changeStatus(planId,userId,"down")
-    return response
-}
-async function setUserMaybe(planId,userId) {
-    const response = await changeStatus(planId,userId,"maybe")
-    return response
-}
 
 
 
@@ -111,4 +100,4 @@ async function getListPlans(listIds) {
 }
 
 
-module.exports = { getPlanById, createPlan, getListPlans, setUserHost, setUserDown, setUserMaybe,setUserDown,changeStatus}
+module.exports = { getPlanById, createPlan, getListPlans, setUserHost, }

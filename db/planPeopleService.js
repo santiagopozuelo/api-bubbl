@@ -123,6 +123,7 @@ async function setStatus(userId,planId, status) {
 }
 
 async function getPlanStatus(userId, planId) {
+    console.log("plan Status")
     const userRef = await db.collection(UsersTable).doc(userId)
     var status = await userRef.collection(PlansTable).doc(planId).get().then(snap=>{
         if (snap.exists && snap.data() != null) {
@@ -208,6 +209,16 @@ async function getCalendarPlans(userId) {
     return plans
 }
 
+async function setUserDown(planId,userId) {
+    const response = await changeStatus(planId,userId,"down")
+    return response
+}
+async function setUserMaybe(planId,userId) {
+    const response = await changeStatus(planId,userId,"maybe")
+    return response
+}
+
+
 
 
 
@@ -221,9 +232,17 @@ async function setSeen(userId,planId) {
     return repSeen
 }
 
+async function setUserHost(planId, userId) {
+
+    const response = await changeStatus(userId, planId, "host")
+    return response
+    
+
+}
 
 async function tagPlanPeople(userId, planId, peopleList) {
     //loop over each user
+    console.log("tagging people")
     var newPlanStatus = {status: "invited", addedBy: userId}
     var peopleOut=[]
     for (person of peopleList) {
@@ -241,7 +260,7 @@ async function tagPlanPeople(userId, planId, peopleList) {
     for (person of peopleOut) {
         console.log("inside loop")
         console.log(person)
-        var response = await peopleRef.doc(person).collection(PlansTable).doc(planId).set({status:"invited",  invitedBy: userId, updatedAt: Date()})
+        var response = await peopleRef.doc(person).collection(PlansTable).doc(planId).set({status:"invited",  invitedBy: userId, updatedAt: new Date()})
         var response2 = await subPeopleRef.doc(person).set({status:"invited",  invitedBy: userId, updatedAt: new Date()})
         setUnseen(person,planId)
         console.log(response)
@@ -251,7 +270,7 @@ async function tagPlanPeople(userId, planId, peopleList) {
 
 }
 
-module.exports = { tagPlanPeople,changeStatus ,getPlanStatus, getPlansGoing, getPlansHosting, getPlansWithStatus, getCalendarPlans}
+module.exports = { setUserHost,setUserDown,setUserMaybe,tagPlanPeople,changeStatus ,getPlanStatus, getPlansGoing, getPlansHosting, getPlansWithStatus, getCalendarPlans}
 
 
 

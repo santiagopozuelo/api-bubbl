@@ -69,11 +69,12 @@ exports.CalendarPlans = async (request,response)=> {
 	//get plansId going and hosting 
 	//get those plans objects
 	//order
-	const plansCalendar = await userService.getPlansGoingHosting(userId) 
+	//const plansCalendar = await userService.getPlansGoingHosting(userId) 
+	const plansCalendar = await userService.getPlansProfile(userId) 
 	if (plansCalendar) {
-		return response.status(200).json({response: plansCalendar})
+		return response.status(200).json({response: plansCalendar, success: true})
 	} else {
-		return response.status(500).json({response: error})
+		return response.status(500).json({response: error, success: false})
 	}
 	//return planIds
 
