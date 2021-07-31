@@ -4,7 +4,7 @@ const router = express();
 const planService = require("../db/planService")
 const userService = require("../db/userService")
 const planPeopleService = require("../db/planPeopleService")
-var planClubService = require("../db/clubService")
+//var planClubService = require("../db/clubService")
 
 
 const {findOrCreate, users, } = require("../db/userService.js")
@@ -174,36 +174,36 @@ exports.createPublicPlan = async (req,res) => {
 
 }
 
-exports.createClubPlan = async (req,res) => {
-    var host = req.body.host
-    console.log(req.body)
-    var date = new Date(req.body.date)
-    var planInfo = {
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        title: req.body.title,
-        emoji: req.body.emoji,
-        description: req.body.description,
-        date: date,
-        host: req.body.host,
-        visibility: req.body.visibility || null,
-        club: req.body.club || null
+// exports.createClubPlan = async (req,res) => {
+//     var host = req.body.host
+//     console.log(req.body)
+//     var date = new Date(req.body.date)
+//     var planInfo = {
+//         createdAt: new Date(),
+//         updatedAt: new Date(),
+//         title: req.body.title,
+//         emoji: req.body.emoji,
+//         description: req.body.description,
+//         date: date,
+//         host: req.body.host,
+//         visibility: req.body.visibility || null,
+//         club: req.body.club || null
         
-    }
-    var plan = await planService.createPlan(planInfo)
-    var club = req.body.club
-    console.log(club)
+//     }
+//     var plan = await planService.createPlan(planInfo)
+//     var club = req.body.club
+//     console.log(club)
 
-    var info = await planPeopleService.setUserHost(plan.id, host)
-    var added
-    if (club != null) {
-        added = await planClubService.tagPlanClub(club,host,plan.id)
-        console.log("cub added")
-        console.log(added)
-    }
+//     var info = await planPeopleService.setUserHost(plan.id, host)
+//     var added
+//     if (club != null) {
+//         added = await planClubService.tagPlanClub(club,host,plan.id)
+//         console.log("cub added")
+//         console.log(added)
+//     }
 
 
-}
+// }
 
 exports.createPlan = async (req, res) => {
     try {
