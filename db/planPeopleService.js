@@ -124,7 +124,7 @@ async function setStatus(userId,userInfo ,planId, status) {
 
    }
    if (userInfo["username"] !=null) {
-    info["username"] = userInfo["name"]
+    info["username"] = userInfo["username"]
 
 }   
   
