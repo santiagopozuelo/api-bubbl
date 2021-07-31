@@ -7,6 +7,7 @@ const PlansPeople = process.env.PLANS_PEOPLE
 
 const planService = require("./planService.js")
 
+
 //setUserStatus
 
 
@@ -65,6 +66,9 @@ async function updatePlan(userId,planId, lastMessage) {
 
 async function changeStatus(userId,planId,newStatus) {
 
+    var userInfo = await userService.getUserById(userId)
+    
+
     var currentStatus = await getPlanStatus(userId,planId)
     if (currentStatus == newStatus) {
         console.log(planId)
@@ -73,7 +77,7 @@ async function changeStatus(userId,planId,newStatus) {
     } else {
         console.log("different status")
         
-        var change = await setStatus(userId,planId,newStatus)
+        var change = await setStatus(userId, userInfo, planId,newStatus)
 
         if (change == true) {
             console.log("changed status")
@@ -108,13 +112,23 @@ async function changeStatus(userId,planId,newStatus) {
     }
 }
 
-async function setStatus(userId,planId, status) {
+async function setStatus(userId,userInfo ,planId, status) {
    // if status is going, interested, hidden
    var userRef = await db.collection(UsersTable).doc(userId)
    var planRef =  await db.collection(PlansTable).doc(planId)
 
    //update message
    var info = {updatedAt: Date(), status: status}
+   if (userInfo["profile-picture"] !=null) {
+       info["profile-picture"] = userInfo["profile-picture"]
+
+   }
+   if (userInfo["username"] !=null) {
+    info["username"] = userInfo["name"]
+
+}   
+  
+   
    var subPlan = await userRef.collection(PlansTable).doc(planId).set(info,{merge:true})
 
    var subUser = await planRef.collection(UsersTable).doc(userId).set(info, {merge:true})
