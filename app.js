@@ -37,9 +37,9 @@ const router = express.Router()
 
 //PLANS
  const {
-   modifyPlanStatus,
+   //modifyPlanStatus,
 //   deletePlan,
-   loadFeedPlans,
+   loadMyPlans,
    createPlan,
    createPublicPlan,
    getPlan,
@@ -49,10 +49,10 @@ const router = express.Router()
 //PLANS
 app.post("/plans/people/add", addPlanPeople)
 app.get("/plans/:planId",getPlan)
-app.get("/plans/feed/:userId", loadFeedPlans)
+app.get("/plans/feed/:userId", loadMyPlans)
 
 
-app.put("/plans/:planId", modifyPlanStatus)
+// app.put("/plans/:planId", modifyPlanStatus)
 // app.get("/plans/:planId",getPlan)
  app.post("/plans", createPlan)
  app.post("/plans/public", createPublicPlan)
@@ -154,4 +154,5 @@ app.listen(process.env.PORT || 3001, () => console.log("Server listening on http
 // app.delete('/clubs/:clubId', deleteClub)
 // app.put('/clubs/:clubId', editClubDetails)
 // app.put('/clubs/followers', editClubFollowers)
+
 
