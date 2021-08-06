@@ -65,10 +65,10 @@ exports.editPeopleStatus = async(req, res) => {
     var results = await planPeopleService.changeStatus(userId, planId, newStatus)
 
     if (results == true) {
-        return res.status(200).json({response: results})
+        return res.status(200).json({success: results})
 
     } else {
-        return res.status(500).json({response: results})
+        return res.status(500).json({success: results})
     }
     //getcurrent status
         //check different than new
