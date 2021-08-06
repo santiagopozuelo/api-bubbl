@@ -118,7 +118,7 @@ async function setStatus(userId,userInfo ,planId, status) {
    var planRef =  await db.collection(PlansTable).doc(planId)
 
    //update message
-   var info = {updatedAt: Date(), status: status}
+   var info = {updatedAt: Date(), status: status, id: userId}
    if (userInfo["profile-picture"] !=null) {
        info["profile-picture"] = userInfo["profile-picture"]
 
