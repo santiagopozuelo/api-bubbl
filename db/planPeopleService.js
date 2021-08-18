@@ -123,8 +123,8 @@ async function setStatus(userId,userInfo ,planId, status) {
        info["profile-picture"] = userInfo["profile-picture"]
 
    }
-   if (userInfo["username"] !=null) {
-    info["username"] = userInfo["username"]
+   if (userInfo["name"] !=null) {
+    info["name"] = userInfo["name"]
 
 }   
   
