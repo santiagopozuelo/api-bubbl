@@ -30,18 +30,20 @@ async function createPlan(planData) {
 
 async function getPlanById(planId) {
     console.log(`plan id is: ${planId}`)
+    var myPlan
     var ans = await db.collection(PlansTable).doc(planId).get().then(snap=>{
+        
         if (snap.data() != null) {
             var info = snap.data()
             console.log("in snap of plan by id")
             //format into plan struct
             console.log(info)
-            return info
+            myPlan = info
         } else {
             return null
         }
     })
-    //return ans
+    return myPlan
 }
 
 async function getPlanRef(planId) {
