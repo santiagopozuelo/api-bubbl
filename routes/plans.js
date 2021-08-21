@@ -4,6 +4,7 @@ const router = express();
 const planService = require("../db/planService")
 const userService = require("../db/userService")
 const planPeopleService = require("../db/planPeopleService")
+const notificationService = require("../db/notificationService")
 //var planClubService = require("../db/clubService")
 
 
@@ -145,7 +146,11 @@ exports.createPublicPlan = async (req,res) => {
             description: req.body.description,
             date: date,
             host: req.body.host,
-            visibility: req.body.visibility
+            visibility: req.body.visibility,
+            club: req.body.club,
+            open_invites: req.body.open_invites,
+            people: req.body.people,
+            server: req.body.server
 
         }
         var plan = await planService.createPlan(planInfo)
@@ -212,7 +217,9 @@ exports.createPlan = async (req, res) => {
         var host = req.body.host
         console.log(req.body)
         var date = new Date(req.body.date)
+        
         var planInfo = {
+            
             createdAt: new Date(),
             updatedAt: new Date(),
             title: req.body.title,
@@ -221,6 +228,10 @@ exports.createPlan = async (req, res) => {
             date: date,
             host: req.body.host,
             visibility: req.body.visibility || null,
+            club: req.body.club,
+            open_invites: req.body.open_invites,
+            people: req.body.people,
+            server: req.body.server
             
         }
         var plan = await planService.createPlan(planInfo)
@@ -228,15 +239,19 @@ exports.createPlan = async (req, res) => {
         console.log("printing peopole")
         console.log(people)
         console.log(plan)
+        console.log(`plan id is this; ${plan.id}`)
         
         //var info = await planService.duplicateMembership(plan, user)
         
         var info = await planPeopleService.setUserHost(plan.id, host)
         var added
-        if (people != null) {
-            added = await planPeopleService.tagPlanPeople(host,plan.id, people)
+        if (people.length > 1) {
+            console.log("send notification beofre")
+            //added = await planPeopleService.tagPlanPeople(host,plan.id, people)
+            var updates = await notificationService.sendInvites(host, plan.id, people)
+
             console.log("people added")
-            console.log(added)
+            console.log(updates)
         }
         //create update message on join
         if (info == true) {
