@@ -77,7 +77,7 @@ async function changeStatus(userId,planId,newStatus) {
     } else {
         console.log("different status")
         
-        var change = await setStatus(userId, userInfo, planId,newStatus)
+        var change = await setStatus(userId, userInfo, planId, newStatus)
 
         if (change == true) {
             console.log("changed status")
@@ -96,7 +96,6 @@ async function changeStatus(userId,planId,newStatus) {
             } else if (newStatus == "host"){
                 console.log("host")
                 setSeen(userId,planId)
-
             }
  
             return true
@@ -139,14 +138,31 @@ async function setStatus(userId,userInfo ,planId, status) {
 async function getPlanStatus(userId, planId) {
     console.log("plan Status")
     const userRef = await db.collection(UsersTable).doc(userId)
-    var status = await userRef.collection(PlansTable).doc(planId).get().then(snap=>{
+    const planRef = await db.collection(PlansTable).doc(userId)
+    var status = await userRef.collection(PlansTable).doc(planId).get().then(async snap=>{
         if (snap.exists && snap.data() != null) {
             return snap.data()["status"]
         } else {
-            return "uninvited"
+            //return null
+            var otherStatus = await planRef.get().then(snapshot => {
+                if (snapshot.exists && snapshot.data() != null) {
+                    var people = snapshot.data()["people"]
+                    if (people.includes(userId)) {
+                        console.log("person invited")
+                        return "invited"
+                    } else {
+                        console.log("uninvited")
+                        return "uninvited"
+                    }
+                }
+            })
+            return otherStatus
+            
         }
 
     })
+    
+    
     return status
 }
 
