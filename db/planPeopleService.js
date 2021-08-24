@@ -1,4 +1,4 @@
-const {db}= require('./firebase.js')
+const {db, admin}= require('./firebase.js')
 
 const userService = require("./userService.js")
 const PlansTable = process.env.PLANS_TABLE
@@ -63,6 +63,33 @@ async function updatePlan(userId,planId, lastMessage) {
     return update
 }
 
+async function setUndecided(userId,planId) {
+    var userRef = await db.collection(UsersTable).doc(userId)
+    var planRef =  await db.collection(PlansTable).doc(planId)
+    
+    userRef.collection(PlansTable).doc(planId).delete()
+    planRef.collection(UsersTable).doc(userId).delete()
+    console.log("after set undecided")
+    return true
+
+}
+
+async function setHide(userId,planId) {
+    var userRef = await db.collection(UsersTable).doc(userId)
+    var planRef =  await db.collection(PlansTable).doc(planId)
+    
+    userRef.collection(PlansTable).doc(planId).delete()
+    planRef.collection(UsersTable).doc(userId).delete()
+    if (planRef != null) {
+        await planRef.update({
+            people: admin.firestore.FieldValue.arrayRemove(userId)
+        })
+    }
+
+    return true
+
+}
+
 
 async function changeStatus(userId,planId,newStatus) {
 
@@ -70,6 +97,8 @@ async function changeStatus(userId,planId,newStatus) {
     
 
     var currentStatus = await getPlanStatus(userId,planId)
+    console.log(`old status : ${currentStatus}`)
+    console.log(`new status : ${newStatus}`)
     if (currentStatus == newStatus) {
         console.log(planId)
         console.log("same status")
@@ -77,19 +106,41 @@ async function changeStatus(userId,planId,newStatus) {
     } else {
         console.log("different status")
         
-        var change = await setStatus(userId, userInfo, planId, newStatus)
+        //if newStatus == invited,going, host
+        var change
+        if (newStatus == "undecided") {
+            change = await setUndecided(userId, planId)
+
+        } else if (newStatus == "hide"){
+            change = await setHide(userId, planId)
+        }
+        else {
+            change = await setStatus(userId, userInfo, planId, currentStatus, newStatus)
+        }
+        
 
         if (change == true) {
             console.log("changed status")
             //create update
             var updateMessage 
+            //new status == hide
             if (newStatus == "going") {
                 var username = await userService.getUsernameById(userId)
                 console.log(`username changing ${username}`)
 
                 updateMessage = await updatePlan(userId,planId,`${username} joined the plan`)
 
-            } else if (newStatus == "invited") {
+            } else if (newStatus == "hide") {
+                //remove plan from person 
+                //remove user from subcollection of plan
+                //remove user from array of plan
+
+            } else if (newStatus == "undecided") {
+                //remove user from subcollection of plan
+                //remove plan from subcolleciton of user
+
+            }
+            else if (newStatus == "invited") {
                 console.log("invited")
                 setUnseen(userId,planId)
 
@@ -111,21 +162,28 @@ async function changeStatus(userId,planId,newStatus) {
     }
 }
 
-async function setStatus(userId,userInfo ,planId, status) {
+async function setStatus(userId,userInfo ,planId, oldStatus,newStatus) {
    // if status is going, interested, hidden
    var userRef = await db.collection(UsersTable).doc(userId)
    var planRef =  await db.collection(PlansTable).doc(planId)
 
    //update message
-   var info = {updatedAt: new Date(), status: status, id: userId}
+   var info = {updatedAt: new Date(), status: newStatus, id: userId}
    if (userInfo["profile-picture"] !=null) {
        info["profile-picture"] = userInfo["profile-picture"]
 
    }
    if (userInfo["name"] !=null) {
     info["name"] = userInfo["name"]
+    }   
 
-}   
+    if (oldStatus == "uninvited") {
+        console.log("user was uninvited")
+        await planRef.update({
+            people: admin.firestore.FieldValue.arrayUnion(userId)
+        })
+
+    }
   
    
    var subPlan = await userRef.collection(PlansTable).doc(planId).set(info,{merge:true})
@@ -138,12 +196,13 @@ async function setStatus(userId,userInfo ,planId, status) {
 async function getPlanStatus(userId, planId) {
     console.log("plan Status")
     const userRef = await db.collection(UsersTable).doc(userId)
-    const planRef = await db.collection(PlansTable).doc(userId)
+    const planRef = await db.collection(PlansTable).doc(planId)
     var status = await userRef.collection(PlansTable).doc(planId).get().then(async snap=>{
         if (snap.exists && snap.data() != null) {
             return snap.data()["status"]
         } else {
             //return null
+            console.log("nostatus")
             var otherStatus = await planRef.get().then(snapshot => {
                 if (snapshot.exists && snapshot.data() != null) {
                     var people = snapshot.data()["people"]
