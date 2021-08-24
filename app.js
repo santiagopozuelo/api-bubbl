@@ -56,7 +56,6 @@ app.get("/plans/feed/:userId", loadMyPlans)
 // app.get("/plans/:planId",getPlan)
  app.post("/plans", createPlan)
  app.post("/plans/public", createPublicPlan)
- // app.get("/plans/publicfeed", loadFeedPlans)
 // app.delete("/plans/:planId", deletePlan)
 // app.put("/plans/people", editPlanPeople)
 
@@ -68,6 +67,7 @@ const {
 } = require('./routes/planPeople.js')
 
 app.get("/plans/people/profile/:userId", getProfilePlans)
+//app.post("/plans/people")
 app.post("/plans/people", editPeopleStatus)
 
 //USER
