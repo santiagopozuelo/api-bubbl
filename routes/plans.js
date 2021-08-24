@@ -49,6 +49,17 @@ exports.getPlan= async (req,res)=> {
 
 }
 
+exports.deletePlan = async (req,res)=> {
+    var planId = req.params.planId
+    var result = await planPeopleService.deletePlanById(planId)
+    if (result != null) {
+        return res.status(200).json({success: true})
+    } else {
+        return res.status(200).json({success: false})
+    }
+
+}
+
 exports.loadMyPlans = async (req, res) => {
     try {
         console.log("loading plans from feed")

@@ -38,7 +38,7 @@ const router = express.Router()
 //PLANS
  const {
    //modifyPlanStatus,
-//   deletePlan,
+   deletePlan,
    loadMyPlans,
    createPlan,
    createPublicPlan,
@@ -50,6 +50,7 @@ const router = express.Router()
 app.post("/plans/people/add", addPlanPeople)
 app.get("/plans/:planId",getPlan)
 app.get("/plans/feed/:userId", loadMyPlans)
+app.delete("/plans/:planId", deletePlan)
 
 
 // app.put("/plans/:planId", modifyPlanStatus)
