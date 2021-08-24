@@ -23,6 +23,56 @@ async function updatePlanMessage(planId, message) {
     }
 }
 
+async function deletePlanDoc(docRef) {
+    const collections = await docRef.listCollections()
+    if (collections.length > 0) {
+        await Promise.all(collections.map(collection => deleteSubCollection(collection)))
+    }
+    
+    var deletedDoc = await docRef.delete()
+    return deletedDoc
+
+}
+
+async function deleteSubCollection(collectionRef) {
+    var collectionSnap = await collectionRef.get()
+    if (collectionSnap.empty){
+        console.log("is empty")
+        return
+    }
+    await Promise.all(collectionSnap.docs.map(doc => doc.ref.delete()))
+}
+
+async function deleteSubPlan(userTable, userId, planId) {
+    var userRef = userTable.doc(userId)
+    var userDeleted = await userRef.collection(PlansTable).doc(planId).delete()
+    return userDeleted
+}
+
+async function deletePlanById(planId) {
+    var userCollection = db.collection(UsersTable)
+
+    var planRef = db.collection(PlansTable).doc(planId)
+    var planPeople
+    await planRef.get().then(snap => {
+        if(snap.exists && snap.data() != null) {
+            var info = snap.data()
+            planPeople = info["people"]
+        }
+    })
+    var deletedPlan = await deletePlanDoc(planRef)
+
+    if (planPeople != null && planPeople.length > 0) {
+        for (userId of planPeople) {
+            var deletedSubPlan = await deleteSubPlan(userCollection,userId,planId)
+        }
+
+    }
+    
+    return true
+
+}
+
 async function updateViewersMessage(userIds, planId, message) {
     //update updatedAt, lastMessage for usersId
     //var planRef  = db.collection(PlansTable).doc(planId)
@@ -359,7 +409,7 @@ async function tagPlanPeople(userId, planId, peopleList) {
 
 }
 
-module.exports = { setUserHost,setUserDown,setUserMaybe,tagPlanPeople,changeStatus ,getPlanStatus, getPlansGoing, getPlansHosting, getPlansWithStatus, getCalendarPlans}
+module.exports = { deletePlanById, setUserHost,setUserDown,setUserMaybe,tagPlanPeople,changeStatus ,getPlanStatus, getPlansGoing, getPlansHosting, getPlansWithStatus, getCalendarPlans}
 
 
 
