@@ -48,16 +48,7 @@ async function sendInvites(host,planId, people) {
         return true
 
     }
-    
-
-
-    
-
-    //get people fcm tokens. 
-    //send invite to each
-
-
-
+ 
 }
 
 
