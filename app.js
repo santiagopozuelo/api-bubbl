@@ -46,6 +46,13 @@ const router = express.Router()
     addPlanPeople
  } = require('./routes/plans.js')
 
+
+ const {
+   deleteGuestUsers,
+ } = require("./routes/user.js")
+
+ app.post("/users/deleteguests", deleteGuestUsers)
+
 //PLANS
 app.post("/plans/people/add", addPlanPeople)
 app.get("/plans/:planId",getPlan)

@@ -15,6 +15,78 @@ const planService = require("../db/planService.js")
 //     contactNumber:String
 // }
 
+
+
+async function deleteSubCollection(collectionRef) {
+    var collectionSnap = await collectionRef.get()
+    if (collectionSnap.empty){
+        console.log("is empty")
+        return
+    }
+   await Promise.all(collectionSnap.docs.map(doc => doc.ref.delete()))
+   //await Promise.all(collectionSnap.docs.map(doc => console.log(doc)))
+}
+async function deletePlanDoc(docRef) {
+    const collections = await docRef.listCollections()
+    if (collections.length > 0) {
+        await Promise.all(collections.map(collection => deleteSubCollection(collection)))
+    }
+    
+    var deletedDoc = await docRef.delete()
+    return deletedDoc
+
+}
+
+exports.deleteGuestUsers = async(request,response) => {
+	db.collection("bubbl-users").listDocuments().then(documentRefs => {
+		
+		return db.getAll(...documentRefs);
+	 }).then(async documentSnapshots => {
+		for (let documentSnapshot of documentSnapshots) {
+		   if (documentSnapshot.exists) {
+			 console.log(`Found document with data: ${documentSnapshot.id}`);
+		   } else {
+			 console.log(`Found missing document: ${documentSnapshot.id}`);
+			 await deletePlanDoc(documentSnapshot.ref)
+		   }
+		}
+	 });
+	return response.status(200).json("beh")
+
+
+}
+
+// exports.deleteGuestUsers2 = async(request,response) => {
+// 	db.collection("bubbl-users").get().then(async querySnap=> {
+// 		var betaUsers = []
+// 		var guestUsers = []
+
+
+// 		querySnap.forEach(async doc => {
+// 			var info = doc.data()
+// 			//console.log(info)
+// 			if (info["uid"] != null) {
+// 				console.log(` ${info["name"]}: has beta user`)
+// 				betaUsers.push(info["name"])
+
+// 			} else {
+// 				//db.collection("bubbl-users").doc(doc.id).delete()
+// 				//doc.ref.delete()
+// 				console.log("other")
+// 				var subPlanRef = await doc.ref.collection("bubbl-plans")
+// 				console.log(subPlanRef.docs.length)
+// 				await deleteSubCollection(subPlanRef)
+				
+// 				guestUsers.push(info["name"])
+
+// 				console.log(`${info["name"]}: has no account`)
+// 			}
+// 		})
+// 		return response.status(200).json({"betaUsers":betaUsers, "guestUsers": guestUsers})
+
+// 	})
+// }
+
 exports.getUserIfExists = async(request, response ) => {
 	const userId = request.params.user_id
 	console.log("GETTINGUSER")
