@@ -159,7 +159,7 @@ exports.createPublicPlan = async (req,res) => {
             host: req.body.host,
             visibility: req.body.visibility,
             club: req.body.club,
-            open_invites: req.body.open_invites,
+            openInvites: req.body.openInvites,
             people: req.body.people,
             server: req.body.server
 
@@ -227,7 +227,11 @@ exports.createPlan = async (req, res) => {
         //title cant be null
         var host = req.body.host
         console.log(req.body)
+        console.log("date from body")
+        console.log(req.body.date)
         var date = new Date(req.body.date)
+        console.log("date created with Date()")
+        console.log(date)
         
         var planInfo = {
             
@@ -240,7 +244,7 @@ exports.createPlan = async (req, res) => {
             host: req.body.host,
             visibility: req.body.visibility || null,
             club: req.body.club,
-            open_invites: req.body.open_invites,
+            openInvites: req.body.openInvites,
             people: req.body.people,
             server: req.body.server
             

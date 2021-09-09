@@ -117,8 +117,8 @@ async function setUndecided(userId,planId) {
     var userRef = await db.collection(UsersTable).doc(userId)
     var planRef =  await db.collection(PlansTable).doc(planId)
     
-    userRef.collection(PlansTable).doc(planId).delete()
-    planRef.collection(UsersTable).doc(userId).delete()
+    await userRef.collection(PlansTable).doc(planId).delete()
+    await planRef.collection(UsersTable).doc(userId).delete()
     console.log("after set undecided")
     return true
 
