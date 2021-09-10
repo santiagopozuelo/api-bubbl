@@ -287,6 +287,28 @@ exports.createPlan = async (req, res) => {
       }
 }
 
+exports.notifyTag = async (req, res) => {
+    try {
+        //validate info with schema
+        //title cant be null
+        var userId = req.body.userId
+        var receiverIds = req.body.receiverIds
+        var planId = req.body.planId
+        console.log(req.body)
+        var updates = await notificationService.sendInvites(userId, planId, receiverIds)
+
+
+
+        
+        return res.status(200).json({success: true})
+
+
+    } catch {
+        console.log("error")
+    }
+}
+
+
 
 //delete plam
 

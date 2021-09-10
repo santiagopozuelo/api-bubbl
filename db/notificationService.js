@@ -9,7 +9,7 @@ const UsersTable = process.env.USERS_TABLE
 const PlansPeople = process.env.PLANS_PEOPLE
 const FriendsTable = process.env.FRIENDS_TABLE
 
-async function sendInvites(host,planId, people) {
+async function sendInvites(senderId,planId, people) {
     console.log(planId)
     console.log(planId)
 
@@ -18,7 +18,7 @@ async function sendInvites(host,planId, people) {
 
     var fcmList = []
     for (userId of people) {
-        if (userId != host) {
+        if (userId != senderId) {
             var currUser = await userService.getUserById(userId)
             var token
             if (currUser != null && currUser["fcmToken"]!= null) {

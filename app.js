@@ -43,7 +43,9 @@ const router = express.Router()
    createPlan,
    createPublicPlan,
    getPlan,
-    addPlanPeople
+    addPlanPeople,
+    notifyTag
+    
  } = require('./routes/plans.js')
 
 
@@ -54,6 +56,7 @@ const router = express.Router()
  app.post("/users/deleteguests", deleteGuestUsers)
 
 //PLANS
+app.post("/people/notifytag", notifyTag)
 app.post("/plans/people/add", addPlanPeople)
 app.get("/plans/:planId",getPlan)
 app.get("/plans/feed/:userId", loadMyPlans)
