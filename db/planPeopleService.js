@@ -374,7 +374,7 @@ async function setUnseen(userId,planId) {
     return repUnseen
 }
 async function setSeen(userId,planId) {
-    var repSeen = await db.collection(PlansTable).doc(planId).collection("seen").doc(userId).set({seen: true})
+    var repSeen = await db.collection(PlansTable).doc(planId).collection("seen").doc(userId).set({seen: true,lastSeen: new Date()})
     return repSeen
 }
 
