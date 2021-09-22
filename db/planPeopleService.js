@@ -178,9 +178,16 @@ async function changeStatus(userId,planId,newStatus) {
                 var username = await userService.getUsernameById(userId)
                 console.log(`username changing ${username}`)
 
-                updateMessage = await updatePlan(userId,planId,`${username} joined the plan`)
+                updateMessage = await updatePlan(userId,planId,`${username} is going`)
 
-            } else if (newStatus == "hide") {
+            } else if (newStatus == "interested") {
+                var username = await userService.getUsernameById(userId)
+                console.log(`username changing ${username}`)
+
+                updateMessage = await updatePlan(userId,planId,`${username} is interested`)
+
+            
+            }else if (newStatus == "hide") {
                 //remove plan from person 
                 //remove user from subcollection of plan
                 //remove user from array of plan
