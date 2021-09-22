@@ -51,9 +51,11 @@ const router = express.Router()
 
  const {
    deleteGuestUsers,
+   getUsersNoId
  } = require("./routes/user.js")
 
  app.post("/users/deleteguests", deleteGuestUsers)
+ app.get("/users/nouid", getUsersNoId)
 
 //PLANS
 app.post("/people/notifytag", notifyTag)

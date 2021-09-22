@@ -55,6 +55,24 @@ exports.deleteGuestUsers = async(request,response) => {
 
 
 }
+exports.getUsersNoId = async(request,response) => {
+	var userOut = {}
+	await db.collection("bubbl-users").get().then(querySnap =>{
+		querySnap.forEach(doc => {
+			var info = doc.data()
+			if (info["uid"] == null) {
+				userOut = info
+				console.log(info)
+				console.log("yeet")
+			}
+		})
+
+	})
+	return response.status(200).json(userOut)
+
+
+
+}
 
 // exports.deleteGuestUsers2 = async(request,response) => {
 // 	db.collection("bubbl-users").get().then(async querySnap=> {
