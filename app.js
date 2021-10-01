@@ -50,12 +50,29 @@ const router = express.Router()
 
 
  const {
-   deleteGuestUsers,
+   
    getUsersNoId
  } = require("./routes/user.js")
-
- app.post("/users/deleteguests", deleteGuestUsers)
  app.get("/users/nouid", getUsersNoId)
+
+
+
+//UTILITY
+
+
+  const {
+    deleteGuestUsers,
+    deleteDMs,
+    addPhones,
+    changeProfile
+  
+  } = require("./routes/utility.js")
+  app.post("/users/deleteguests", deleteGuestUsers)
+  app.post("/deletedms", deleteDMs)
+  app.post("/utility/addphones", addPhones)
+  app.post("/utility/changeprofile", changeProfile)
+
+
 
 //PLANS
 app.post("/people/notifytag", notifyTag)
