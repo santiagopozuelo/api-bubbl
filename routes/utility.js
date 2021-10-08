@@ -76,7 +76,7 @@ exports.changeProfile = async(request,response) => {
                 if (info["profilePicture"] != null) {
                     //console.log(info["profile-picture"])
                     doc.ref.update({
-                        "profile-picture": info["profilePicture"]
+                        "profilePicture": info["profilePicture"]
                     })
                 }
 
