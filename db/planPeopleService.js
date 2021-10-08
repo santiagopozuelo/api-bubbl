@@ -430,10 +430,12 @@ async function setInterested(planId, interestedList) {
         var planStatus = {
             "id": planId,
             "name": personInfo["name"],
-            "profilePictre": personInfo["profilePicture"],
             "status": "interested",
             "updatedAt": new Date()
 
+        }
+        if (personInfo["profilePicture"] != null) {
+            planStatus["profilePicture"] = personInfo["profilePicture"]
         }
         newUsers.push(planStatus)
         var response2 = await subPeopleRef.doc(person).set(planStatus)
