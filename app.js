@@ -44,11 +44,16 @@ const router = express.Router()
    createPublicPlan,
    getPlan,
     addPlanPeople,
-    notifyTag
+    notifyTag,
+    bubblFromThought
     
  } = require('./routes/plans.js')
 
 
+ app.post("/plans", createPlan)
+ app.post("/plans/public", createPublicPlan)
+ app.post("/plans/bubblfromthought", bubblFromThought)
+ 
  const {
    
    getUsersNoId
@@ -84,8 +89,7 @@ app.delete("/plans/:planId", deletePlan)
 
 // app.put("/plans/:planId", modifyPlanStatus)
 // app.get("/plans/:planId",getPlan)
- app.post("/plans", createPlan)
- app.post("/plans/public", createPublicPlan)
+
 // app.delete("/plans/:planId", deletePlan)
 // app.put("/plans/people", editPlanPeople)
 

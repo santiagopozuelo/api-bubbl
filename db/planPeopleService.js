@@ -103,7 +103,7 @@ async function updatePlan(userId,planId, lastMessage) {
         if(!querySnap.empty) {
             querySnap.forEach((doc)=> {
                 if (doc.id != userId) {
-                    console.log("updating")
+                    //console.log("updating")
                     doc.ref.update({"seen": false})
                 }
             })
@@ -226,8 +226,8 @@ async function setStatus(userId,userInfo ,planId, oldStatus,newStatus) {
 
    //update message
    var info = {updatedAt: new Date(), status: newStatus, id: userId}
-   if (userInfo["profile-picture"] !=null) {
-       info["profile-picture"] = userInfo["profile-picture"]
+   if (userInfo["profilePicture"] !=null) {
+       info["profilePicture"] = userInfo["profilePicture"]
 
    }
    if (userInfo["name"] !=null) {
@@ -416,7 +416,37 @@ async function tagPlanPeople(userId, planId, peopleList) {
 
 }
 
-module.exports = { deletePlanById, setUserHost,setUserDown,setUserMaybe,tagPlanPeople,changeStatus ,getPlanStatus, getPlansGoing, getPlansHosting, getPlansWithStatus, getCalendarPlans}
+async function setInterested(planId, interestedList) {
+    //loop over each user
+    console.log("setting people interested") 
+
+    const peopleRef = db.collection(UsersTable)
+    const planDoc = db.collection(PlansTable).doc(planId)
+    const subPeopleRef = planDoc.collection(UsersTable)
+    var newUsers = []
+    for (person of interestedList) {
+        var doc = await peopleRef.doc(person).get()
+        var personInfo = doc.data()
+        var planStatus = {
+            "id": planId,
+            "name": personInfo["name"],
+            "profilePictre": personInfo["profilePicture"],
+            "status": "interested",
+            "updatedAt": new Date()
+
+        }
+        newUsers.push(planStatus)
+        var response2 = await subPeopleRef.doc(person).set(planStatus)
+
+    }
+    console.log(newUsers)
+    return true
+
+    
+
+}
+
+module.exports = { setInterested, deletePlanById, setUserHost,setUserDown,setUserMaybe,tagPlanPeople,changeStatus ,getPlanStatus, getPlansGoing, getPlansHosting, getPlansWithStatus, getCalendarPlans}
 
 
 
