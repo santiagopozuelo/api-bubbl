@@ -228,6 +228,7 @@ exports.createPlan = async (req, res) => {
         var host = req.body.host
         console.log(req.body)
         console.log("date from body")
+        
         console.log(req.body.date)
         var date = new Date(req.body.date)
         console.log("date created with Date()")
@@ -263,6 +264,77 @@ exports.createPlan = async (req, res) => {
         if (people.length > 1) {
             console.log("send notification beofre")
             //added = await planPeopleService.tagPlanPeople(host,plan.id, people)
+            var updates = await notificationService.sendInvites(host, plan.id, people)
+
+            console.log("people added")
+            console.log(updates)
+        }
+        //create update message on join
+        if (info == true) {
+            //var mess = {response: info, }
+            //var resp = {planId: plan.id, peopleIds: added}
+            return res.status(200).json({success: info, response: plan.id})
+        } else {
+            var mess = {success:info}
+            return res.status(500).send(mess);
+        }
+        //affiliate member To Plan
+        //affiliate plan to user
+        
+
+      } catch (error) {
+        console.log(error);
+        return res.status(500).send(error);
+      }
+}
+
+exports.bubblFromThought = async (req, res) => {
+    try {
+        //validate info with schema
+        //title cant be null
+        var host = req.body.host
+        var interestedPeople = req.body.interested
+        var fromThought = req.body.fromThought
+        console.log(req.body)
+        console.log("date from body")
+        
+        console.log(req.body.date)
+        var date = new Date(req.body.date)
+        console.log("date created with Date()")
+        console.log(date)
+        
+        var planInfo = {
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            title: req.body.title,
+            emoji: req.body.emoji,
+            description: req.body.description,
+            date: date,
+            host: req.body.host,
+            visibility: req.body.visibility || null,
+            club: req.body.club,
+            openInvites: req.body.openInvites,
+            people: req.body.people,
+            server: req.body.server,
+            fromThought: fromThought
+            
+        }
+        var plan = await planService.createPlan(planInfo)
+        var people = req.body.people
+        console.log("printing peopole")
+        console.log(people)
+        console.log(plan)
+        console.log(`plan id is this; ${plan.id}`)
+        
+        //var info = await planService.duplicateMembership(plan, user)
+        
+        var info = await planPeopleService.setUserHost(plan.id, host)
+        //service.setInterested(interested)
+       // var resInterested = await planPeopleService.
+        var added
+        if (people.length > 1) {
+            console.log("send notification beofre")
+            added = await planPeopleService.setInterested(plan.id, interestedPeople)
             var updates = await notificationService.sendInvites(host, plan.id, people)
 
             console.log("people added")
