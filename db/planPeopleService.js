@@ -4,6 +4,7 @@ const userService = require("./userService.js")
 const PlansTable = process.env.PLANS_TABLE
 const UsersTable = process.env.USERS_TABLE
 const PlansPeople = process.env.PLANS_PEOPLE
+const BubblsTable = process.env.BUBBLS_TABLE
 
 const planService = require("./planService.js")
 
@@ -53,6 +54,31 @@ async function deletePlanById(planId) {
     var userCollection = db.collection(UsersTable)
 
     var planRef = db.collection(PlansTable).doc(planId)
+    var planPeople
+    await planRef.get().then(snap => {
+        if(snap.exists && snap.data() != null) {
+            var info = snap.data()
+            planPeople = info["people"]
+        }
+    })
+    var deletedPlan = await deletePlanDoc(planRef)
+
+    if (planPeople != null && planPeople.length > 0) {
+        for (userId of planPeople) {
+            var deletedSubPlan = await deleteSubPlan(userCollection,userId,planId)
+        }
+
+    }
+    
+    return true
+
+}
+
+async function deleteBubblById(planId) {
+    var userCollection = db.collection(UsersTable)
+    console.log(`plan id: ${planId}`)
+
+    var planRef = db.collection(BubblsTable).doc(planId)
     var planPeople
     await planRef.get().then(snap => {
         if(snap.exists && snap.data() != null) {
@@ -448,7 +474,7 @@ async function setInterested(planId, interestedList) {
 
 }
 
-module.exports = { setInterested, deletePlanById, setUserHost,setUserDown,setUserMaybe,tagPlanPeople,changeStatus ,getPlanStatus, getPlansGoing, getPlansHosting, getPlansWithStatus, getCalendarPlans}
+module.exports = { deleteBubblById, setInterested, deletePlanById, setUserHost,setUserDown,setUserMaybe,tagPlanPeople,changeStatus ,getPlanStatus, getPlansGoing, getPlansHosting, getPlansWithStatus, getCalendarPlans}
 
 
 

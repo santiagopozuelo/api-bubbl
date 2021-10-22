@@ -39,6 +39,7 @@ const router = express.Router()
  const {
    //modifyPlanStatus,
    deletePlan,
+   deleteBubbl,
    loadMyPlans,
    createPlan,
    createPublicPlan,
@@ -85,6 +86,8 @@ app.post("/plans/people/add", addPlanPeople)
 app.get("/plans/:planId",getPlan)
 app.get("/plans/feed/:userId", loadMyPlans)
 app.delete("/plans/:planId", deletePlan)
+app.delete("/bubbls/:planId", deleteBubbl)
+
 
 
 // app.put("/plans/:planId", modifyPlanStatus)
