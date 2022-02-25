@@ -67,9 +67,9 @@ exports.acceptFriendRequest = async (req,res) => {
     console.log(ans)
 
     if(ans == true) {
-        return res.status(200).json({success: ans})
+        return res.status(200).json({success: true})
     } else {
-        return res.status(200).json({success: ans})
+        return res.status(200).json({success: false})
     }
 }
 
